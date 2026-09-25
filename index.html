@@ -22,21 +22,28 @@
     <button id="connectButton">
       Connect to Arduino
     </button>
-    <button onclick="startMeasurement()">Messung starten</button>
+    <button id="startButton" onclick="startMeasurement()">Messung starten</button>
     <button onclick="document.getElementById('myModal').showModal()">Linie auswählen</button>
     <div id="myPlot" class="plotly-container"></div>
   </div>
 
-  <container id="messages">
-    <p id="message">This is my Testbox </p>
-  </container>
+  
+    
 
-  <details>
-    <summary>Empfangene Daten</summary>
-    <div id="receivedData">
-
+    <div id="messages">
+      <p id="message"> </p>
+      <p id="statusInfo"> </p>
     </div>
-  </details>
+
+    <details>
+      <summary>Empfangene Daten</summary>
+      <div id="receivedData">
+
+      </div>
+    </details>
+
+    <a href="instructions.html" class="btn">Anleitung zum Erstellen</a>
+  
 </body>
 
 <footer>
@@ -56,7 +63,7 @@
 
   <div class="button-grid">
     <!-- 9 Bild-Buttons -->
-    <button class="image-btn" onclick="drawLine1(document.getElementById('myPlot'),standardlayout)">
+    <button class="image-btn" onclick="drawLine1(document.getElementById('myPlot'))">
       <img src="img/Kurve1.png" alt="Option 1">
     </button>
     <button class="image-btn" onclick="drawLine2(document.getElementById('myPlot'))">

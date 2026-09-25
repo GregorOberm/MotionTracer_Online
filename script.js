@@ -16,8 +16,8 @@ let trace1 = {
   mode: 'lines',
   x: [],
   y: [],
-  line: { color: 'blue' },
-  showlegend: false
+  line: { color: 'blue',width: 4 },
+  showlegend: false,
 };
 //trace2 is a line inside the plot 
 let trace2 = {
@@ -25,7 +25,7 @@ let trace2 = {
   mode: 'lines',
   x: [],
   y: [],
-  line: { color: 'red' },
+  line: { color: 'orange',width: 4},
   showlegend: false
 };
 
@@ -42,6 +42,7 @@ const standardlayout = {
     tickmode: 'array',
     tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     ticktext: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+    fixedrange: true // Verhindert das Zoomen auf der X-Achse
   },
   shapes: [
     {
@@ -60,16 +61,35 @@ const standardlayout = {
       }
     }
   ],
-  yaxis: { title: { text: "Position /[cm]" }, range: [0, 40] },
+  yaxis: { title: { text: "Position /[cm]" }, range: [0, 50],fixedrange: true }, // Verhindert das Zoomen auf der Y-Achse
   legend: false,
   dragmode: 'pan', // Standardmäßig auf "pan" setzen
+};
+
+const configPlot = {
+  modeBarButtonsToRemove: [
+    'zoom2d',
+    'pan2d',
+    'select2d',
+    'lasso2d',
+    'zoomIn2d',
+    'zoomOut2d',
+    'autoScale2d',
+    'resetScale2d',
+    'hoverClosestCartesian',
+    'hoverCompareCartesian',
+    'toggleSpikelines',
+    'sendDataToCloud'
+  ],
+  displaylogo: false, // Blendet das Plotly-Logo aus
+  showSendToCloud: false // Blendet die Option "Send to Cloud" aus
 };
 
 
 
 
-
 generatePlot();
+setSystemStatus("disconnected");
 
 
 if (!('serial' in navigator)) {
@@ -83,7 +103,8 @@ connectButton.addEventListener("click", async () => {
     await port.open({ baudRate: 115200 });
     connectButton.innerText = "Connected";
     connectButton.disabled = true;
-    systemStatus = "connected";
+    setSystemStatus("connected");
+    
 
     const textDecoder = new TextDecoderStream();
     const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
@@ -100,27 +121,29 @@ navigator.serial.addEventListener("disconnect", (e) => {
   console.log("Device disconnected:", e);
   connectButton.innerText = "Connect to Arduino";
   connectButton.disabled = false;
-  systemStatus = "disconnected";
+  setSystemStatus("disconnected");
 });
 
 navigator.serial.addEventListener("connect", (e) => {
+
   console.log("Device connected:", e);
   connectButton.innerText = "Connected";
   connectButton.disabled = true;
-  connectionStatus = "connected";
+  setSystemStatus("connected");
 
+  
 });
 
 function generatePlot() {
 
-  Plotly.newPlot("myPlot", data, standardlayout);
+  Plotly.newPlot("myPlot", data, standardlayout, configPlot);
   drawStandardLine(myPlot, standardlayout);
 }
 
 function startMeasurement() {
   if (systemStatus === "connected" || systemStatus === "measuring") {
     console.log("Starting measurement...");
-    systemStatus = "measuring";
+    setSystemStatus("measuring");
     keepReading = true;
     resetPlot();
     readSerialData();
@@ -133,7 +156,7 @@ function updatePlot(x, y) {
   Plotly.extendTraces("myPlot", {
     x: [[x - 3]],
     y: [[y]],
-  }, [0]);
+  }, [1]);
 
 }
 
@@ -179,7 +202,7 @@ function resetPlot() {
 
 
 
-  Plotly.restyle("myPlot", updatedata, [0]);
+  Plotly.restyle("myPlot", updatedata, [1]);
   console.log("Plot und Daten wurden zurückgesetzt.");
 
 
@@ -233,7 +256,7 @@ async function readSerialData() {
                 document.getElementById("receivedData").innerHTML += trimmedLine + "<br>";
               }
               else {
-                systemStatus = "connected";
+                setSystemStatus("connected");
               }
 
               //messageElement.innerHTML += trimmedLine + "<br>";
@@ -261,4 +284,23 @@ function checkOutOfBounds(x,y) {
     document.getElementById("message").innerHTML = "";
   }
   
+}
+
+function setSystemStatus(newStatus) {
+  systemStatus = newStatus;
+  console.log("System status changed to:", systemStatus);
+
+  if(systemStatus === "disconnected") {
+    document.getElementById("statusInfo").innerHTML = "<br> Status: Disconnected";
+    document.getElementById("connectButton").style.display ="inline-block";
+    document.getElementById("startButton").style.display ="none";
+  }
+  else if(systemStatus === "connected") {
+    document.getElementById("statusInfo").innerHTML = "<br> Status: Connected";
+    document.getElementById("connectButton").style.display ="none";
+    document.getElementById("startButton").style.display ="inline-block";
+  }
+  else if(systemStatus === "measuring") {
+    document.getElementById("statusInfo").innerHTML = "<br> Status: Measuring";
+  }
 }

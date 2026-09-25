@@ -318,3 +318,15 @@ button:active,
   font-size: 1.5rem;
   cursor: pointer;
 }
+
+/* Container für die 3 Elemente nebeneinander */
+    .row-layout {
+      display: flex;
+      align-items: center;
+      gap: 16px; /* Abstand zwischen den 3 Elementen */
+      margin-top: 12px;
+    }
+
+    .row-layout > * {
+      flex: 1; /* Gleichmäßige Breite für alle 3 Elemente */
+    }
