@@ -206,11 +206,17 @@ function drawLine9(Plot) {
     Plotly.restyle(Plot, updatedata, [0]);
 
     const updateLayout = {
-        'yaxis.range': [ylim1, ylim2] // Beachte: Bei relayout nur ein einfaches Array [min, max]
+        'yaxis.range': [ylim1, ylim2], // Beachte: Bei relayout nur ein einfaches Array [min, max]
+        'yaxis.fixedrange' : false,
+        'yaxis.rangemode': 'tozero'
     };
 
     Plotly.relayout(Plot, updateLayout);
     console.log("Standardlinie wurde gezeichnet.");
     console.log(updatedata);
     document.getElementById('myModal').close();
+
+    document.getElementById("label-ymax-input").hidden = false;
+    document.getElementById("ymax-input").hidden = false;
+
 }

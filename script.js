@@ -4,7 +4,7 @@ let systemStatus = "disconnected";
 //possible: "disconnected", "connected", "measuring", "error"
 let keepReading = false; // Steuerung für die Leseschleif
 
-
+let receivedData = "TimeStamp;Position;Velocity"
 
 
 let firstTimeStamp;
@@ -16,7 +16,7 @@ let trace1 = {
   mode: 'lines',
   x: [],
   y: [],
-  line: { color: 'blue',width: 4 },
+  line: { color: 'blue', width: 4 },
   showlegend: false,
 };
 //trace2 is a line inside the plot 
@@ -25,7 +25,7 @@ let trace2 = {
   mode: 'lines',
   x: [],
   y: [],
-  line: { color: 'orange',width: 4},
+  line: { color: 'orange', width: 4 },
   showlegend: false
 };
 
@@ -61,7 +61,7 @@ const standardlayout = {
       }
     }
   ],
-  yaxis: { title: { text: "Position /[cm]" }, range: [0, 50],fixedrange: true }, // Verhindert das Zoomen auf der Y-Achse
+  yaxis: { title: { text: "Position /[cm]" }, range: [0, 50], fixedrange: true }, // Verhindert das Zoomen auf der Y-Achse
   legend: false,
   dragmode: 'pan', // Standardmäßig auf "pan" setzen
 };
@@ -104,7 +104,7 @@ connectButton.addEventListener("click", async () => {
     connectButton.innerText = "Connected";
     connectButton.disabled = true;
     setSystemStatus("connected");
-    
+
 
     const textDecoder = new TextDecoderStream();
     const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
@@ -131,7 +131,7 @@ navigator.serial.addEventListener("connect", (e) => {
   connectButton.disabled = true;
   setSystemStatus("connected");
 
-  
+
 });
 
 function generatePlot() {
@@ -140,14 +140,18 @@ function generatePlot() {
   drawStandardLine(myPlot, standardlayout);
 }
 
-function startMeasurement() {
-  if (systemStatus === "connected" || systemStatus === "measuring") {
+
+
+function startButtonClicked() {
+  if (systemStatus === "connected") {
     console.log("Starting measurement...");
     setSystemStatus("measuring");
     keepReading = true;
     resetPlot();
     readSerialData();
   }
+  else if (systemStatus === "measuring")
+    setSystemStatus("connected");
 }
 
 function updatePlot(x, y) {
@@ -240,9 +244,9 @@ async function readSerialData() {
 
           if (daten.length === 3) {
             const rawTime = parseFloat(daten[0]);
-            const val1 = parseFloat(daten[1]);
+            const position = parseFloat(daten[1]);
 
-            if (!isNaN(rawTime) && !isNaN(val1)) {
+            if (!isNaN(rawTime) && !isNaN(position)) {
               if (!TimeStampassigned) {
                 firstTimeStamp = rawTime;
                 TimeStampassigned = true;
@@ -251,9 +255,10 @@ async function readSerialData() {
 
               const timeInSeconds = (rawTime - firstTimeStamp) / 1000;
               if (timeInSeconds < 13 && systemStatus === "measuring") {
-                updatePlot(timeInSeconds, val1);
-                checkOutOfBounds(timeInSeconds, val1);
-                document.getElementById("receivedData").innerHTML += trimmedLine + "<br>";
+                updatePlot(timeInSeconds, position);
+                checkOutOfBounds(timeInSeconds, position);
+                addReceivedDatatoTable(timeInSeconds, position)
+                //document.getElementById("receivedData").innerHTML += trimmedLine + "<br>";
               }
               else {
                 setSystemStatus("connected");
@@ -275,32 +280,115 @@ async function readSerialData() {
   }
 }
 
-function checkOutOfBounds(x,y) {
+function addReceivedDatatoTable(time, position) {
+  const table = document.getElementById("receivedData");
+
+  // Fügt am Ende der Tabelle eine neue Zeile ein
+  const newRow = table.insertRow();
+
+  // Fügt die zwei Zellen in die neue Zeile ein
+  const cell1 = newRow.insertCell(0);
+  const cell2 = newRow.insertCell(1);
+
+  // Setzt den Text der Zellen (sicher gegen XSS)
+  cell1.textContent = (time - 3).toFixed(2);
+  cell2.textContent = (position).toFixed(2);
+}
+
+
+function checkOutOfBounds(x, y) {
   const annotations = [];
   if (y < 0 || y > 40) {
     document.getElementById("message").innerHTML = "Warnung: Der Wert liegt außerhalb des zulässigen Bereichs (0-40 cm).";
   }
-  else{
+  else {
     document.getElementById("message").innerHTML = "";
   }
-  
+
 }
 
 function setSystemStatus(newStatus) {
   systemStatus = newStatus;
   console.log("System status changed to:", systemStatus);
 
-  if(systemStatus === "disconnected") {
+  if (systemStatus === "disconnected") {
     document.getElementById("statusInfo").innerHTML = "<br> Status: Disconnected";
-    document.getElementById("connectButton").style.display ="inline-block";
-    document.getElementById("startButton").style.display ="none";
+    document.getElementById("connectButton").style.display = "inline-block";
+    document.getElementById("startButton").style.display = "none";
   }
-  else if(systemStatus === "connected") {
+  else if (systemStatus === "connected") {
     document.getElementById("statusInfo").innerHTML = "<br> Status: Connected";
-    document.getElementById("connectButton").style.display ="none";
-    document.getElementById("startButton").style.display ="inline-block";
+    document.getElementById("connectButton").style.display = "none";
+    document.getElementById("startButton").style.display = "inline-block";
+    document.getElementById("startButton").innerHTML = "Messung starten"
   }
-  else if(systemStatus === "measuring") {
+  else if (systemStatus === "measuring") {
     document.getElementById("statusInfo").innerHTML = "<br> Status: Measuring";
+    document.getElementById("startButton").innerHTML = "Messung stoppen"
   }
+}
+
+/**
+ * Kopiert den Inhalt der Tabelle in die Zwischenablage.
+ * Die Daten werden durch Tabulatoren (\t) und Zeilenumbrüche (\n) getrennt,
+ * sodass Excel oder Google Sheets sie beim Einfügen (Strg+V) sofort in Spalten aufteilt.
+ */
+async function copyTableToClipboard(myTable) {
+  const table = document.getElementById(myTable);
+  let tsvContent = "";
+
+  // 1. Alle Zeilen der Tabelle durchgehen (inklusive <thead>)
+  const rows = table.querySelectorAll("tr");
+
+  rows.forEach(row => {
+    const rowData = [];
+
+    // 2. Alle Zellen (<th> oder <td>) der aktuellen Zeile auslesen
+    const cells = row.querySelectorAll("th, td");
+    cells.forEach(cell => {
+      // Leerzeichen am Anfang/Ende entfernen
+      let text = cell.textContent.trim();
+      text = text.replace(".", ",");
+      console.log("Text" + text);
+      rowData.push('"' + text + '"');
+    });
+
+    // 3. Zellen mit Tabulator (\t) verbinden und Zeile hinzufügen
+    tsvContent += rowData.join("\t") + "\n";
+  });
+
+  try {
+    // 4. In die Zwischenablage schreiben
+    await navigator.clipboard.writeText(tsvContent);
+    //alert("Tabellendaten wurden kopiert! Du kannst sie jetzt in Excel einfügen (Strg + V).");
+  } catch (err) {
+    console.error("Fehler beim Kopieren: ", err);
+    //alert("Kopieren fehlgeschlagen. Stelle sicher, dass die Anwendung Berechtigungen für die Zwischenablage hat.");
+  }
+}
+
+
+document.getElementById("ymax-input").addEventListener('input', function () {
+  const maxY = parseFloat(this.value);
+
+  // Sicherstellen, dass eine gültige Zahl eingegeben wurde
+  if (!isNaN(maxY)) {
+    const updateLayout = {
+      'yaxis.range': [0, maxY], // Beachte: Bei relayout nur ein einfaches Array [min, max]
+      'yaxis.fixedrange': false,
+      'yaxis.rangemode': 'tozero'
+    };
+
+    Plotly.relayout("myPlot", updateLayout);
+  }
+});
+
+function selectLineButtonClicked() {
+  document.getElementById('myModal').showModal();
+
+  document.getElementById("label-ymax-input").hidden = true;
+    document.getElementById("ymax-input").hidden = true;
+
+
+
 }

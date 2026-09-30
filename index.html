@@ -19,31 +19,51 @@
 
 
   <div class="card">
-    <button id="connectButton">
-      Connect to Arduino
-    </button>
-    <button id="startButton" onclick="startMeasurement()">Messung starten</button>
-    <button onclick="document.getElementById('myModal').showModal()">Linie auswählen</button>
+    
+      <button id="connectButton">
+        Connect to sensor
+      </button>
+      <button id="startButton" onclick="startButtonClicked()">Messung starten</button>
+
+      <button onclick="selectLineButtonClicked()">Linie auswählen</button>
+    
+    
     <div id="myPlot" class="plotly-container"></div>
+    <div>
+      <label id="label-ymax-input" for="ymax-input" hidden>Y-Achse Maximum:</label>
+      <input type="number" id="ymax-input" value="200" step="any" hidden>
+    </div>
   </div>
 
-  
-    
 
-    <div id="messages">
-      <p id="message"> </p>
-      <p id="statusInfo"> </p>
-    </div>
 
-    <details>
-      <summary>Empfangene Daten</summary>
-      <div id="receivedData">
 
-      </div>
-    </details>
+  <div id="messages">
+    <p id="message"> </p>
+    <p id="statusInfo"> </p>
+  </div>
 
-    <a href="instructions.html" target="_blank" class="btn">Anleitung zum Erstellen</a>
-  
+  <details>
+    <summary>Empfangene Daten</summary>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Zeit / [s]</th>
+          <th>Position / [cm]</th>
+          <th><button class="btn-copy" id="copyBtn" onclick="copyTableToClipboard('receivedData')">
+              Daten kopieren
+            </button></th>
+        </tr>
+      </thead>
+      <tbody id="receivedData">
+
+      </tbody>
+    </table>
+  </details>
+
+  <!--<a href="instructions.html" target="_blank" class="btn">Anleitung zum Erstellen</a>
+  -->
 </body>
 
 <footer>
