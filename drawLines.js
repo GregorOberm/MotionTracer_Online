@@ -197,7 +197,7 @@ function drawLine8(Plot) {
 
 function drawLine9(Plot) {
     var ylim1 = 0;
-    var ylim2 = 50;
+    var ylim2 = 200;
     const updatedata = {
         x: [[]], // X-Werte für die Linie
         y: [[]], // Y-Werte für die Linie (z.B. 20 cm) 
