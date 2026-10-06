@@ -458,8 +458,8 @@
 
   .stepContent img {
     display: block;
-    max-width: min(80vw, 100%);
-    max-height: 80vh;
+    max-width: min(80vw, 70%);
+    max-height: min(80vh, 70%);
     width: auto;
     height: auto;
     object-fit: contain;
