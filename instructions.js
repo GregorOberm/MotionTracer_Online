@@ -101,7 +101,7 @@ function parseHex(hexText) {
 }
 
 async function loadFirmware() {
-    const response = await fetch('Firmware/Blink_Test.ino.hex');
+    const response = await fetch('Firmware/MotionTracer_Firmware_Test.ino.hex');
     if (!response.ok) {
         throw new Error(`Firmware-Datei konnte nicht geladen werden (HTTP ${response.status}).`);
     }
