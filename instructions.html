@@ -4,28 +4,27 @@
 
 <head>
     <link rel="stylesheet" href="mystyle.css">
+    <script src="instructions.js" defer></script>
+    <script src="load-footer.js" defer></script>
 
 </head>
 
 <body>
-    <div class="card">
-        <h1>Anleitung zum Erstellen</h1>
-        
-        <container class="steps">
-            <h2>Schritt 1</h2>
-            <br>
-            <p>Verwendete Geräte:<br>Funduino Uno<br>Ultraschallsensor HC-SR04<br>
-                Verbinde den Funduino mit dem Ultaschallsensor:
+    <h1>Anleitung zum Erstellen</h1>
 
-            </p>
+    <div class="card instructions-card">
+        <container class="steps">
+            <h2 id="actualStep">Schritt 1</h2>
+
+            <p id="stepContentImage" class="stepContent"> </p>
+            <p id="stepContentText" class="stepContent"> </p>
+            
         </container>
         
-        <div>
-            <button>Nächster Schritt</button>
+        <div class="instruction-actions">
+            <button onclick="nextStepButtonClicked()">Nächster Schritt</button>
         </div>
-
-
-        
     </div>
 
+    <div id="site-footer"></div>
 </body>

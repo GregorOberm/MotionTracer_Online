@@ -44,11 +44,14 @@
   }
 
   body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     font-family: var(--font-family);
     background-color: var(--bg-main);
     color: var(--text-main);
     line-height: 1.6;
-    padding: 2rem 1rem;
+    padding: 2rem 1rem 0;
   }
 
   /* Haupt-Container für die Website */
@@ -109,6 +112,17 @@
 
   .card:hover {
     box-shadow: var(--shadow-lg);
+  }
+
+  .instructions-card {
+    flex: 1;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .instruction-actions {
+    align-self: flex-end;
+    margin-top: auto;
   }
 
   /* Grid-Layout für Eingaben/Bedienfeld */
@@ -241,7 +255,7 @@
     ========================================================================== */
   @media (max-width: 640px) {
     body {
-      padding: 1rem 0.5rem;
+      padding: 1rem 0.5rem 0;
     }
 
     .card {
@@ -320,24 +334,24 @@
   }
 
   table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 12px;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-  text-align: left;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    text-align: left;
   }
 
   /* Tabellenkopf */
   table thead th {
-  background-color: #f7f9fa;
-  color: #555555;
-  font-weight: 600;
-  padding: 10px 12px;
-  border-bottom: 2px solid #e2e8f0;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
+    background-color: #f7f9fa;
+    color: #555555;
+    font-weight: 600;
+    padding: 10px 12px;
+    border-bottom: 2px solid #e2e8f0;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
   }
 
   /* Tabelleninhalt / Zeilen /
@@ -350,10 +364,103 @@
 
   /* Abwechselnde Zeilenfarben für bessere Lesbarkeit */
   table tbody tr:nth-child(even) {
-  background-color: #f8fafc;
+    background-color: #f8fafc;
   }
 
   /* Verhindert Rand unter der letzten Zeile */
   table tbody tr:last-child td {
-  border-bottom: none;
+    border-bottom: none;
+  }
+
+
+  /* --- FOOTER STYLES --- */
+  footer {
+      margin-top: auto;
+    background-color: #f3c776;
+    color: #000000;
+    padding: 40px 20px 20px 20px;
+
+    margin-top: auto;
+  }
+
+  /* Container für die 3 Spalten (Flexbox) */
+  .footer-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 30px;
+  }
+
+  /* Jede einzelne Spalte */
+  .footer-column {
+    flex: 1;
+    min-width: 250px;
+    /* Macht es auf kleinen Bildschirmen automatisch einspaltig */
+  }
+
+  /* Überschriften im Footer */
+  .footer-column h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #000000;
+    border-bottom: 2px solid #444;
+    padding-bottom: 5px;
+  }
+
+  /* Absätze und Text */
+  .footer-column p {
+    color: #000000;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  /* Link-Listen */
+  .footer-column ul {
+    list-style: none;
+  }
+
+  .footer-column ul li {
+    margin-bottom: 8px;
+  }
+
+  .footer-column ul li a {
+    color: #000000;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+
+  /* Link-Hover Effekt */
+  .footer-column ul li a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  /* Unterste Zeile (Copyright) */
+  .footer-bottom {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #333;
+    color: #aaa;
+    font-size: 13px;
+  }
+
+
+  .stepContent {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: var(--text-main);
+    max-width: 80%;
+  }
+
+  .stepContent img {
+    display: block;
+    max-width: min(80vw, 100%);
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
