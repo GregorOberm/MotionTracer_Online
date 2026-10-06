@@ -197,7 +197,11 @@ function drawLine8(Plot) {
 
 function drawLine9(Plot) {
     var ylim1 = 0;
-    var ylim2 = 200;
+    var ylim2 = 100;
+
+    document.getElementById("ymax-input").value = ylim2;
+    document.getElementById("xmax-input").value = 10;
+
     const updatedata = {
         x: [[]], // X-Werte für die Linie
         y: [[]], // Y-Werte für die Linie (z.B. 20 cm) 
@@ -207,7 +211,7 @@ function drawLine9(Plot) {
 
     const updateLayout = {
         'yaxis.range': [ylim1, ylim2], // Beachte: Bei relayout nur ein einfaches Array [min, max]
-        'yaxis.fixedrange' : false,
+        //'yaxis.fixedrange' : false,
         'yaxis.rangemode': 'tozero'
     };
 
@@ -218,5 +222,7 @@ function drawLine9(Plot) {
 
     document.getElementById("label-ymax-input").hidden = false;
     document.getElementById("ymax-input").hidden = false;
+    document.getElementById("label-xmax-input").hidden = false;
+    document.getElementById("xmax-input").hidden = false;
 
 }

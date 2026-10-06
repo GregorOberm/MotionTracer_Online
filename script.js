@@ -34,14 +34,18 @@ let data = [trace1, trace2];
 let buffer = '';
 let firstRead = true;
 
+let measurementInterval = 10;
+
 const standardlayout = {
   xaxis: {
     title: {
       text: "Zeit/[s]"
     }, range: [-3, 10],
     tickmode: 'array',
-    tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    ticktext: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+    //tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    //ticktext: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'],
+    tickvals: Array.from({ length: 101 }, (_, i) => i),
+    ticktext: Array.from({ length: 101 }, (_, i) => String(i)),
     fixedrange: true // Verhindert das Zoomen auf der X-Achse
   },
   shapes: [
@@ -254,7 +258,7 @@ async function readSerialData() {
               }
 
               const timeInSeconds = (rawTime - firstTimeStamp) / 1000;
-              if (timeInSeconds < 13 && systemStatus === "measuring") {
+              if (timeInSeconds < (measurementInterval+3) && systemStatus === "measuring") {
                 updatePlot(timeInSeconds, position);
                 checkOutOfBounds(timeInSeconds, position);
                 addReceivedDatatoTable(timeInSeconds, position)
@@ -315,16 +319,19 @@ function setSystemStatus(newStatus) {
     document.getElementById("statusInfo").innerHTML = "<br> Status: Disconnected";
     document.getElementById("connectButton").style.display = "inline-block";
     document.getElementById("startButton").style.display = "none";
+    document.getElementById("selectLineButton").disabled = false;
   }
   else if (systemStatus === "connected") {
     document.getElementById("statusInfo").innerHTML = "<br> Status: Connected";
     document.getElementById("connectButton").style.display = "none";
     document.getElementById("startButton").style.display = "inline-block";
     document.getElementById("startButton").innerHTML = "Messung starten"
+    document.getElementById("selectLineButton").disabled = false;
   }
   else if (systemStatus === "measuring") {
     document.getElementById("statusInfo").innerHTML = "<br> Status: Measuring";
     document.getElementById("startButton").innerHTML = "Messung stoppen"
+    document.getElementById("selectLineButton").disabled = true;
   }
 }
 
@@ -375,7 +382,7 @@ document.getElementById("ymax-input").addEventListener('input', function () {
   if (!isNaN(maxY)) {
     const updateLayout = {
       'yaxis.range': [0, maxY], // Beachte: Bei relayout nur ein einfaches Array [min, max]
-      'yaxis.fixedrange': false,
+      //'yaxis.fixedrange': true,
       'yaxis.rangemode': 'tozero'
     };
 
@@ -383,12 +390,37 @@ document.getElementById("ymax-input").addEventListener('input', function () {
   }
 });
 
+document.getElementById("xmax-input").addEventListener('input', function () {
+  const maxX = parseFloat(this.value);
+
+  // Sicherstellen, dass eine gültige Zahl eingegeben wurde
+  if (!isNaN(maxX)) {
+    const updateLayout = {
+      'xaxis.range': [-3, maxX], // Beachte: Bei relayout nur ein einfaches Array [min, max]
+      //'xaxis.fixedrange': false,
+      //'xaxis.rangemode': 'tozero'
+    };
+
+    Plotly.relayout("myPlot", updateLayout);
+    measurementInterval = maxX;
+    console.log("Measurement interval updated to:", measurementInterval);
+  }
+});
+
+
 function selectLineButtonClicked() {
   document.getElementById('myModal').showModal();
 
   document.getElementById("label-ymax-input").hidden = true;
-    document.getElementById("ymax-input").hidden = true;
+  document.getElementById("ymax-input").hidden = true;
+  document.getElementById("label-xmax-input").hidden = true;
+  document.getElementById("xmax-input").hidden = true;
 
-
-
+  measurementInterval = 10;
+  console.log("Measurement interval reset to:", measurementInterval);
+  document.getElementById("xmax-input").value = measurementInterval;
+  const updateLayout = {
+    'xaxis.range': [-3, measurementInterval], // Beachte: Bei relayout nur ein einfaches Array [min, max]
+  };
+  Plotly.relayout("myPlot", updateLayout);
 }

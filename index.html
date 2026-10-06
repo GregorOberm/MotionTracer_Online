@@ -19,19 +19,29 @@
 
 
   <div class="card">
-    
-      <button id="connectButton">
-        Connect to sensor
-      </button>
-      <button id="startButton" onclick="startButtonClicked()">Messung starten</button>
 
-      <button onclick="selectLineButtonClicked()">Linie auswählen</button>
-    
-    
+    <button id="connectButton">
+      Connect to sensor
+    </button>
+    <button id="startButton" onclick="startButtonClicked()">Messung starten</button>
+
+    <button id="selectLineButton" onclick="selectLineButtonClicked()">Linie auswählen</button>
+
+
     <div id="myPlot" class="plotly-container"></div>
     <div>
-      <label id="label-ymax-input" for="ymax-input" hidden>Y-Achse Maximum:</label>
-      <input type="number" id="ymax-input" value="200" step="any" hidden>
+      <table>
+        <tr>
+          <td>
+            <label id="label-ymax-input" for="ymax-input" hidden>Y-Achse Maximum:</label>
+            <input type="number" id="ymax-input" value="100" step="any" hidden>
+          </td>
+          <td>
+            <label id="label-xmax-input" for="xmax-input" hidden>X-Achse Maximum:</label>
+            <input type="number" id="xmax-input" value="10" step="any" hidden>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 
@@ -53,7 +63,18 @@
           <th>Position / [cm]</th>
           <th><button class="btn-copy" id="copyBtn" onclick="copyTableToClipboard('receivedData')">
               Daten kopieren
-            </button></th>
+            </button>
+          </th>
+          <!-- Beginn zur Auswahl des Dezimaltrennzeichens (Punkt oder Komma)
+          <th>
+            <p>Verwendetes Komma: </p>
+            <input type="radio" id="dot" name="decimal" value="dot" checked>
+            <label for="dot">Punkt</label><br>
+            <input type="radio" id="comma" name="decimal" value="comma">
+            <label for="comma">Komma</label>
+
+          </th>
+        -->
         </tr>
       </thead>
       <tbody id="receivedData">
