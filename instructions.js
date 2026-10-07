@@ -3,28 +3,43 @@ let actualStep = 0;
 
 nextStepButtonClicked();
 
-function nextStepButtonClicked() {
+function previousStepButtonClicked() {
 
-    actualStep++;
+    if (actualStep > 1) {
+        actualStep--;
+        stepButtonClicked();
+    }
+}
+function nextStepButtonClicked(){
+    if(actualStep < 3){
+        actualStep++;
+        stepButtonClicked();
+    }
+}
+
+
+function stepButtonClicked() {
+
+    
 
     document.getElementById('actualStep').textContent = 'Schritt ' + actualStep;
 
     if (actualStep == 1) {
         document.getElementById('stepContentImage').innerHTML = '<img id="step1Image" src="img/instruction/step1.jpg" alt="Step 1 Image">';
-        document.getElementById('stepContentText').textContent = 'Verwendete Geräte: Funduino Uno, Ultraschallsensor HC-SR04.';
+        document.getElementById('stepContentText').innerHTML = '<h3>Verwendete Geräte:</h3><br><ul><li>Funduino Uno</li><li>Ultraschallsensor HC-SR04</li></ul>';
     }
     else if (actualStep == 2) {
         document.getElementById('stepContentImage').innerHTML = '<img id="step2Image" src="img/instruction/step2.png" alt="Step 2 Image">';
-        document.getElementById('stepContentText').textContent = 'Verbinde den Funduino mit dem Ultraschallsensor.';
+        document.getElementById('stepContentText').innerHTML = '<h3>Verbinde den Funduino mit dem Ultraschallsensor:</h3> <table><tr><th>Funduino</th><th>Ultraschallsensor</th></tr><tr><td>5V</td><td>VCC</td></tr><tr><td>GND</td><td>GND</td></tr><tr><td>D2</td><td>Trig</td></tr><tr><td>D3</td><td>ECHO</td></tr></table>';
     }
     else if (actualStep == 3) {
-        document.getElementById('stepContentImage').innerHTML = '';
-        document.getElementById('stepContentText').innerHTML = '<button id="flashButton" type="button" onclick="uploadFirmware()">Software flashen</button><p id="statusText" role="status">Bereit.</p><p>Lade nun die Software auf den Funduino hoch.</p>';
+        document.getElementById('stepContentImage').innerHTML = '<img id="step3Image" src="img/instruction/step3.jpg" alt="Step 3 Image">';
+        document.getElementById('stepContentText').innerHTML = '<h3>Alles in das Gehäuse einbauen und Software flashen</h3><br><p>An den Laptop anschließen und den Button klicken:<br></p><button id="flashButton" type="button" onclick="uploadFirmware()">Software flashen</button><p id="statusText" role="status"></p>';
     }
     else {
         document.getElementById('stepContentImage').innerHTML = '';
-        document.getElementById('stepContentText').textContent = 'Fertig! Du kannst nun den MotionTracer verwenden.';
-        document.getElementById('nextStepButton').style.display = 'none';
+        document.getElementById('stepContentText').innerHTML = '<h3>Fertig!</h3><p>Du kannst nun den MotionTracer verwenden.</p>';
+        //document.getElementById('nextStepButton').style.display = 'none';
     }
 
 

@@ -375,7 +375,7 @@
 
   /* --- FOOTER STYLES --- */
   footer {
-      margin-top: auto;
+    margin-top: auto;
     background-color: #f3c776;
     color: #000000;
     padding: 40px 20px 20px 20px;
@@ -458,9 +458,55 @@
 
   .stepContent img {
     display: block;
-    max-width: min(80vw, 70%);
-    max-height: min(80vh, 70%);
+    max-width: min(80vw, 30%);
+    max-height: min(80vh, 30%);
     width: auto;
     height: auto;
-    object-fit: contain;
+    object-fit: scale-down;
+  }
+
+  .stepContentImageRow {
+    margin-top: 30px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    max-height: min(80vh, 30%);
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  .stepContentImageRow img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(90vw, 40rem);
+    max-height: min(80vh, 30rem);
+    object-fit: scale-down;
+  }
+
+  .stepContentTextRow {
+    margin-top: 30px;
+    font-size: 1rem;
+    text-align: left;
+    border: 1px solid var(--border-color);
+  }
+
+  .stepContentTextRow ul {
+    padding-left: 1.5rem;
+    list-style: disc;
+  }
+
+  #stepTable {
+    width: 100%;
+    border: 1px solid var(--border-color);
+  }
+
+  #step1Image,
+  #step2Image,
+  #step3Image,
+  #step4Image,
+  #step5Image {
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
   }

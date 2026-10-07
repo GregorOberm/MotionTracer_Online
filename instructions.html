@@ -14,14 +14,28 @@
 
     <div class="card instructions-card">
         <container class="steps">
-            <h2 id="actualStep">Schritt 1</h2>
+            <table id="stepTable">
+                <thead>
+                    <tr>
+                        <th><h2 id="actualStep">Schritt 1</h2></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="stepTableBody">
+                    <tr>
+                    <td class="stepContentImageRow"><p id="stepContentImage"></p></td>
+                    <td class="stepContentTextRow"><div id="stepContentText"></div></td>
+                    </tr>
+                </tbody>
+            </table>
+            
 
-            <p id="stepContentImage" class="stepContent"> </p>
-            <div id="stepContentText" class="stepContent"></div>
+            
             
         </container>
         
         <div class="instruction-actions">
+            <button id="previousStepButton" type="button" onclick="previousStepButtonClicked()">Vorheriger Schritt</button>
             <button id="nextStepButton" type="button" onclick="nextStepButtonClicked()">Nächster Schritt</button>
         </div>
     </div>
